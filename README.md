@@ -2,11 +2,11 @@
 
 ## Overview
 
-SuperInstaller is a C# Windows Forms application designed to simplify the installation process for your software.  Instead of relying on traditional installer packages, SuperInstaller creates a single executable (`Installer.exe`) that contains all the necessary files and logic to install your application.  This approach offers a streamlined and potentially more portable installation experience.
+SuperInstaller is a C# Windows Forms application designed to simplify the installation process for your software.  It creates a single, self-contained executable (`Installer.exe`) that contains all the necessary files and logic to install your application.  This approach offers a streamlined and portable installation experience.
 
 ## Key Features
 
-* **Single-File Installation:** Packages all installation files into a single `Installer.exe`.
+* **Single-File Installation:** Packages all installation files into a single, self-contained `Installer.exe`.
 * **Embedded ZIP Archive:** Embeds a ZIP archive containing your application's files within the `Installer.exe`.
 * **Dynamic Uninstaller Generation:** Generates an `Uninstaller.exe` at installation time using Roslyn (C# compiler).
 * **Customizable Installation Path:** Allows the user to select the installation directory.
@@ -22,7 +22,7 @@ SuperInstaller is a C# Windows Forms application designed to simplify the instal
     * You embed this ZIP archive into the `SuperInstaller` application's resources (`Resources.resx`).
     * The uninstaller C# code is also stored in `Resources.resx`.
 2.  **Installation:**
-    * When the user runs the generated `Installer.exe`:
+    * When the user runs `Installer.exe`:
         * The embedded ZIP archive is extracted to the user-selected directory.
         * An `Uninstaller.exe` is dynamically generated using Roslyn and placed in the same directory.
         * An `InstallationLog.txt` file is created.
@@ -35,7 +35,7 @@ The `SuperInstaller` application is primarily contained within the `Form1` class
 
 * **`Form1()`:**
     * Initializes the form, resource manager, and UI elements.
-    * Sets the default installation path to the Program Files directory.
+    * Sets the default installation path.
 * **`browseButton_Click()`:**
     * Displays a `FolderBrowserDialog` to allow the user to select the installation directory.
 * **`button1_Click()`:**
@@ -48,28 +48,17 @@ The `SuperInstaller` application is primarily contained within the `Form1` class
     * Extracts the contents of the ZIP archive to the installation directory.
     * Writes installation details to `InstallationLog.txt`.
     * Generates and compiles `Uninstaller.exe` using Roslyn.
-    * Generates and compiles `Installer.exe` using Roslyn.
     * Displays a completion message.
     * Handles potential exceptions during the installation process.
     * Re-enables UI elements in the `finally` block.
 * **`CompileUninstallerRoslyn(string outputPath)`:**
     * Retrieves the uninstaller C# code from `Resources.resx`.
     * Uses Roslyn to compile the code into an executable file (`Uninstaller.exe`).
-* **`CompileInstaller(string outputPath)`:**
-    * Generates the installer code.
-    * Creates a ZIP archive of the installation files.
-    * Embeds the ZIP archive as a resource.
-    * Uses Roslyn to compile the installer.
-* **`GenerateInstallerCode()`:**
-    * Generates the C# code for the `Installer.exe`. This code includes logic to:
-        * Extract the embedded ZIP archive.
-        * Generate the uninstaller.
-        * Display a completion message.
 * **`FormatFileSize(long bytes)`:**
     * Helper method to format file sizes (bytes, KB, MB) for display.
 * **`UpdateOutput(string message)`:**
-    * Updates the `listBox1` control with installation progress messages. Handles cross-threading.
-* **`button2_Click()`**:
+    * Updates the `listBox1` control with installation progress messages.
+* **`button2_Click()`:**
     * Closes the Form.
 
 ## Dependencies
@@ -99,14 +88,11 @@ The `SuperInstaller` application is primarily contained within the `Form1` class
     * Make sure the names of the resources match the names used in the code (e.g., `ZipResourceName`, `UninstallerResourceName`).
     * Modify the `embeddedFileResourceNames` array to include the names of the zip files you want to install.
 6.  **Build and Run:**
-    * Build your project. The resulting `SuperInstaller.exe` will be in your `bin\Debug` or `bin\Release` directory. Running `SuperInstaller.exe` will generate the `Installer.exe`.
-    * The generated `Installer.exe` will be in the directory specified during the installation process.
+    * Build your project. The resulting `Installer.exe` will be in your `bin\Debug` or `bin\Release` directory. This `Installer.exe` is self-contained and ready to distribute.
 
 ## Important Considerations
 
-* **SuperInstaller.exe vs. Installer.exe:**
-    * `SuperInstaller.exe`: This is the application you build from your Visual Studio project.  Its purpose is to *generate* the `Installer.exe`.  You distribute `SuperInstaller.exe` to create your installers.
-    * `Installer.exe`: This is the application that `SuperInstaller.exe` creates.  It's the installer that your *users* will run to install your application.  It contains the embedded ZIP archive and the installation logic.
+* **Self-Contained Installer:** The `Installer.exe` that is generated is self-contained. It does not require any other executable to run.
 * **Error Handling:** The code includes basic error handling, but you may want to add more robust error logging and user feedback.
 * **Uninstaller Code:** The uninstaller code is generated dynamically. Ensure that it correctly removes all installed files and directories.
 * **Resource Management:** Properly manage the embedded resources to avoid memory issues.
@@ -117,6 +103,10 @@ The `SuperInstaller` application is primarily contained within the `Form1` class
 * **Update embeddedFileResourceNames**: Change the string array `embeddedFileResourceNames = { "subterob-v1.0.0.zip" }`; to the name of your zip file in the `Resources.resx`. If you have more than one zip file, add all the names.
 * **Change ZipResourceName**: Change the constant `private const string ZipResourceName = "installation_files";` to the name you gave to the zip file in the `Resources.resx`.
 
+## Source Code
+
+* **Coming Soon:** The source code for this project will be made available in a future release.
+
 ## Contributing
 
 1.  Fork the repository.
@@ -125,7 +115,3 @@ The `SuperInstaller` application is primarily contained within the `Form1` class
 4.  Commit your changes.
 5.  Push to the branch.
 6.  Create a pull request.
-
-## License
-
-
